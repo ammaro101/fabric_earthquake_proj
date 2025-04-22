@@ -1,0 +1,96 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "fefb55de-c95b-8839-488e-57a057339854",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "start_date": {
+              "value": {
+                "value": "@formatDateTime(addDays(utcNow(), -1), 'yyyy-MM-dd')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "end_date": {
+              "value": {
+                "value": "@formatDateTime(utcNow(), 'yyyy-MM-dd')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Bronze Layer Notebook",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "6d7d9b30-8ec4-a7bc-421e-0a04d66c8092",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "start_date": {
+              "value": "@formatDateTime(addDays(utcNow(), -1), 'yyyy-MM-dd')",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Silver Layer Notebook",
+        "dependsOn": [
+          {
+            "activity": "Bronze Layer Notebook",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "0e7d16df-1b7f-881d-4344-27e200075457",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "start_date": {
+              "value": "@formatDateTime(addDays(utcNow(), -1), 'yyyy-MM-dd')",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Gold Layer Notebook",
+        "dependsOn": [
+          {
+            "activity": "Silver Layer Notebook",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
